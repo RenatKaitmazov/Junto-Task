@@ -9,6 +9,7 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -36,7 +37,7 @@ public final class NetModule {
     @Provides
     @Singleton
     String provideBaseUrl() {
-        return "https://api.producthunt.com/v1/";
+        return "https://api.producthunt.com/";
     }
 
     @Provides
@@ -48,10 +49,19 @@ public final class NetModule {
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttpClient(@Named("Headers") Interceptor interceptor) {
+    @Named("Logging")
+    Interceptor provideLoggingInterceptor() {
+        return new HttpLoggingInterceptor();
+    }
+
+    @Provides
+    @Singleton
+    OkHttpClient provideOkHttpClient(@Named("Headers") Interceptor headersInterceptor,
+                                     @Named("Logging") Interceptor loggingInterceptor) {
         return new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-                .addInterceptor(interceptor)
+                .addInterceptor(headersInterceptor)
+                .addInterceptor(loggingInterceptor)
                 .build();
     }
 

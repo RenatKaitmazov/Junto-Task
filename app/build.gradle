@@ -51,6 +51,7 @@ dependencies {
 
     // An http client for retrofit
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
 
     // Testing
     testImplementation 'junit:junit:4.12'
