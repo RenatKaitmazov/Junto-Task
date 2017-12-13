@@ -3,6 +3,8 @@ package lz.renatkaitmazov.juntotesttask.di.app;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import lz.renatkaitmazov.juntotesttask.di.fragment.FragmentSubcomponent;
+import lz.renatkaitmazov.juntotesttask.di.fragment.ProductListFragmentModule;
 import lz.renatkaitmazov.juntotesttask.di.net.NetModule;
 
 /**
@@ -18,6 +20,7 @@ import lz.renatkaitmazov.juntotesttask.di.net.NetModule;
 public interface AppComponent {
 
     // Factory methods for dependent subcomponents go here
+    FragmentSubcomponent plus(ProductListFragmentModule module);
 
     // Injection targets go here
 }

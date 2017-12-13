@@ -22,7 +22,7 @@ abstract class AbstractPresenter<V : MvpView>(view: V?) {
     /* API                                                                    */
     /*------------------------------------------------------------------------*/
 
-    fun destroyView() {
+    open fun onDestroy() {
         view = null
     }
 }
