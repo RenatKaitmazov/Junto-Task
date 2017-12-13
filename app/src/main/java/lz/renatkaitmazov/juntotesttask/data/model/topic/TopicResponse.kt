@@ -1,4 +1,4 @@
-package lz.renatkaitmazov.juntotesttask.data.model
+package lz.renatkaitmazov.juntotesttask.data.model.topic
 
 /**
  *

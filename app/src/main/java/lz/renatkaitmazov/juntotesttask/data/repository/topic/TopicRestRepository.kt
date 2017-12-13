@@ -1,7 +1,7 @@
-package lz.renatkaitmazov.juntotesttask.data.repository
+package lz.renatkaitmazov.juntotesttask.data.repository.topic
 
 import io.reactivex.Flowable
-import lz.renatkaitmazov.juntotesttask.data.model.Topic
+import lz.renatkaitmazov.juntotesttask.data.model.topic.Topic
 
 /**
  *

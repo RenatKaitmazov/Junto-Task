@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.toolbar.view.*
 import lz.renatkaitmazov.juntotesttask.JuntoApp
 import lz.renatkaitmazov.juntotesttask.R
 import lz.renatkaitmazov.juntotesttask.base.RetainableFragment
-import lz.renatkaitmazov.juntotesttask.data.model.Topic
+import lz.renatkaitmazov.juntotesttask.data.model.product.Product
+import lz.renatkaitmazov.juntotesttask.data.model.topic.Topic
 import lz.renatkaitmazov.juntotesttask.di.fragment.ProductListFragmentModule
 import javax.inject.Inject
 
@@ -58,12 +59,16 @@ class ProductListFragment : RetainableFragment(), ProductListView {
     @JvmField
     var presenter: ProductListPresenter? = null
 
+    lateinit var topicSlug: String
+        private set
+
     /*------------------------------------------------------------------------*/
     /* Lifecycle Events                                                       */
     /*------------------------------------------------------------------------*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        topicSlug = getString(R.string.default_slug)
         JuntoApp.get(activity as Context)
                 .appComponent
                 .plus(ProductListFragmentModule(this))
@@ -80,6 +85,8 @@ class ProductListFragment : RetainableFragment(), ProductListView {
         productRecyclerView = view.productRecyclerView
         setUpProductRecyclerView(productRecyclerView)
         progressBar = view.progressBar
+        // Fetch data as soon as all views are initialized
+        presenter?.getTodayProducts(topicSlug)
         return view
     }
 
@@ -105,6 +112,7 @@ class ProductListFragment : RetainableFragment(), ProductListView {
 
     override fun hideProgress() {
         progressBar.visibility = View.GONE
+        refreshLayout.isRefreshing = false
     }
 
     override fun showError(error: Throwable) {
@@ -115,9 +123,16 @@ class ProductListFragment : RetainableFragment(), ProductListView {
         Log.i("ProductListFragment", topics.toString())
     }
 
+    override fun showTodayProducts(products: List<Product>) {
+        Log.i("ProductListFragment", products.toString())
+    }
+
     /*------------------------------------------------------------------------*/
     /* Helper Methods                                                         */
     /*------------------------------------------------------------------------*/
+
+    private fun isFetchingData() = progressBar.visibility == View.VISIBLE
+            || refreshLayout.isRefreshing
 
     private fun setUpToolbar(toolbar: Toolbar) {
         val parentActivity = activity as AppCompatActivity
@@ -127,7 +142,7 @@ class ProductListFragment : RetainableFragment(), ProductListView {
         // Set our own clickable title.
         toolbar.toolbarTitle.setText(R.string.default_category)
         toolbar.toolbarTitle.setOnClickListener {
-            if (!refreshLayout.isRefreshing) {
+            if (!isFetchingData()) {
                 presenter?.getTrendingTopics()
             }
         }
@@ -140,10 +155,8 @@ class ProductListFragment : RetainableFragment(), ProductListView {
         val purple = ContextCompat.getColor(ctx, android.R.color.holo_purple)
         swipeRefreshLayout.setColorSchemeColors(darkRed, darkGreen, purple)
         swipeRefreshLayout.setOnRefreshListener {
-            val isProgressBarRefreshing = progressBar.visibility == View.VISIBLE
-            if (!swipeRefreshLayout.isRefreshing && !isProgressBarRefreshing) {
-                swipeRefreshLayout.isRefreshing = true
-                // TODO: fetch data from the server
+            if (!isFetchingData()) {
+                presenter?.refreshTodayProducts(topicSlug)
             }
         }
     }

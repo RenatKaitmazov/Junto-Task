@@ -1,4 +1,4 @@
-package lz.renatkaitmazov.juntotesttask.data.model
+package lz.renatkaitmazov.juntotesttask.data.model.topic
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class Topic(val name: String,
+                 val slug: String,
                  val description: String,
                  @SerializedName("followers_count") val followersCount: Int,
                  @SerializedName("posts_count") val postsCount: Int,
