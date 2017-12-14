@@ -3,7 +3,14 @@
 
     <string name="default_slug">tech</string>
     <string name="default_category">Tech</string>
+    <string name="error_fetch_data">An error occurred while fetching data</string>
+    <string name="error_view_link">Install a web browser to open the product page</string>
 
-    <string name="product_thumbnail_description">Displays an image of a product</string>
+    <string name="product_thumbnail_description">Displays a thumbnail of a product</string>
+    <string name="product_image_description">Displays an image of a product</string>
     <string name="up_vote_image_description">Shows the number of up votes</string>
+
+    <string name="get_label">Get it</string>
+
+    <string name="chooser_title">Choose an application to open the the product page</string>
 </resources>

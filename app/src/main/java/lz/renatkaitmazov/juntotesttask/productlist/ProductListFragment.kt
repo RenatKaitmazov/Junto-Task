@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_product_list.view.*
 import kotlinx.android.synthetic.main.toolbar.view.*
 import lz.renatkaitmazov.juntotesttask.JuntoApp
@@ -22,6 +23,7 @@ import lz.renatkaitmazov.juntotesttask.common.ItemDividerDecoration
 import lz.renatkaitmazov.juntotesttask.data.model.product.Product
 import lz.renatkaitmazov.juntotesttask.data.model.topic.Topic
 import lz.renatkaitmazov.juntotesttask.di.fragment.ProductListFragmentModule
+import lz.renatkaitmazov.juntotesttask.productdetail.ProductDetailActivity
 import lz.renatkaitmazov.juntotesttask.productlist.adapter.ProductAdapter
 import javax.inject.Inject
 
@@ -54,11 +56,9 @@ class ProductListFragment :
     lateinit var refreshLayout: SwipeRefreshLayout
         private set
 
-    lateinit var productRecyclerView: RecyclerView
-        private set
+    private lateinit var productRecyclerView: RecyclerView
 
-    lateinit var productAdapter: ProductAdapter
-        private set
+    private lateinit var productAdapter: ProductAdapter
 
     lateinit var progressBar: ProgressBar
         private set
@@ -67,8 +67,7 @@ class ProductListFragment :
     @JvmField
     var presenter: ProductListPresenter? = null
 
-    lateinit var topicSlug: String
-        private set
+    private lateinit var topicSlug: String
 
     /*------------------------------------------------------------------------*/
     /* Lifecycle Events                                                       */
@@ -124,7 +123,8 @@ class ProductListFragment :
     }
 
     override fun showError(error: Throwable) {
-        Log.e("ProductListFragment", error.message)
+        val ctx = activity as Context
+        Toast.makeText(ctx, R.string.error_fetch_data, Toast.LENGTH_LONG).show()
     }
 
     override fun showTrendingTopics(topics: List<Topic>) {
@@ -140,7 +140,8 @@ class ProductListFragment :
     /*------------------------------------------------------------------------*/
 
     override fun onItemClicked(item: Product) {
-        Log.d("ProductListFragment", item.toString())
+        val activityIntent = ProductDetailActivity.newIntent(activity!!, item)
+        startActivity(activityIntent)
     }
 
     /*------------------------------------------------------------------------*/

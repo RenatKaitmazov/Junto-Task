@@ -3,10 +3,13 @@
     <dimen name="elevation_tiny">4dp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
 
     <dimen name="thumbnail_width">64dp</dimen>
     <dimen name="thumbnail_height">64dp</dimen>
 
     <dimen name="product_item_height">100dp</dimen>
+    <dimen name="product_image_height">240dp</dimen>
+
     <dimen name="item_divider_height">0.5dp</dimen>
 </resources>
