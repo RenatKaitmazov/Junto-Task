@@ -1,5 +1,6 @@
 package lz.renatkaitmazov.juntotesttask.data.repository.product
 
+import android.support.v4.util.LruCache
 import io.reactivex.Flowable
 import lz.renatkaitmazov.juntotesttask.data.model.product.Product
 import lz.renatkaitmazov.juntotesttask.data.model.product.ProductMapper
@@ -10,7 +11,8 @@ import retrofit2.Retrofit
  * @author Renat Kaitmazov
  */
 class ProductRestRepositoryImpl(retrofit: Retrofit,
-                                private val productMapper: ProductMapper) : ProductRestRepository {
+                                private val productMapper: ProductMapper,
+                                private val cache: LruCache<String, List<Product>>) : ProductRestRepository {
 
     /*------------------------------------------------------------------------*/
     /* Properties                                                             */
@@ -23,12 +25,17 @@ class ProductRestRepositoryImpl(retrofit: Retrofit,
     /*------------------------------------------------------------------------*/
 
     override fun getTodayProducts(topicSlug: String): Flowable<List<Product>> {
+        val cachedProducts = cache.get(topicSlug)
+        if (cachedProducts != null) {
+            return Flowable.just(cachedProducts)
+        }
         return restApi.getTodayProducts(topicSlug)
                 .map { it.products }
                 .map(productMapper::map)
+                .doOnNext { cache.put(topicSlug, it)}
     }
 
-    override fun clearCache() {
-
+    override fun clearCache(topicSlug: String) {
+        cache.remove(topicSlug)
     }
 }

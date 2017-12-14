@@ -1,8 +1,16 @@
 package lz.renatkaitmazov.juntotesttask.di.fragment;
 
+import android.support.v4.util.LruCache;
+
+import java.util.List;
+
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
+import lz.renatkaitmazov.juntotesttask.data.model.product.Product;
 import lz.renatkaitmazov.juntotesttask.data.model.product.ProductMapper;
+import lz.renatkaitmazov.juntotesttask.data.model.topic.Topic;
 import lz.renatkaitmazov.juntotesttask.data.repository.product.ProductRestRepository;
 import lz.renatkaitmazov.juntotesttask.data.repository.product.ProductRestRepositoryImpl;
 import lz.renatkaitmazov.juntotesttask.data.repository.topic.TopicRestRepository;
@@ -40,8 +48,9 @@ public final class ProductListFragmentModule {
 
     @Provides
     @FragmentScope
-    TopicRestRepository provideTopicRestRepository(Retrofit retrofit) {
-        return new TopicRestRepositoryImpl(retrofit);
+    TopicRestRepository provideTopicRestRepository(Retrofit retrofit,
+                                                   @Named("TopicCache") LruCache<String, List<Topic>> cache) {
+        return new TopicRestRepositoryImpl(retrofit, cache);
     }
 
     @Provides
@@ -52,8 +61,10 @@ public final class ProductListFragmentModule {
 
     @Provides
     @FragmentScope
-    ProductRestRepository provideProductRestRepository(Retrofit retrofit, ProductMapper mapper) {
-        return new ProductRestRepositoryImpl(retrofit, mapper);
+    ProductRestRepository provideProductRestRepository(Retrofit retrofit,
+                                                       ProductMapper mapper,
+                                                       @Named("ProductCache") LruCache<String, List<Product>> cache) {
+        return new ProductRestRepositoryImpl(retrofit, mapper, cache);
     }
 
     @Provides

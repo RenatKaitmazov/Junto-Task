@@ -1,5 +1,8 @@
 package lz.renatkaitmazov.juntotesttask.di.net;
 
+import android.support.v4.util.LruCache;
+
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
@@ -7,6 +10,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import lz.renatkaitmazov.juntotesttask.data.Cache;
+import lz.renatkaitmazov.juntotesttask.data.model.product.Product;
+import lz.renatkaitmazov.juntotesttask.data.model.topic.Topic;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -29,6 +35,8 @@ public final class NetModule {
     /*------------------------------------------------------------------------*/
 
     private static final long TIMEOUT = 15L;
+    // The maximum number of entries in a cache (NOT THE NUMBER OF BYTES!!!)
+    private static final int CACHE_SIZE = 100;
 
     /*------------------------------------------------------------------------*/
     /* Dependencies                                                           */
@@ -74,5 +82,20 @@ public final class NetModule {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("ProductCache")
+    LruCache<String, List<Product>> provideProductCache() {
+        return new Cache<>(CACHE_SIZE);
+    }
+
+    @Provides
+    @Singleton
+    @Named("TopicCache")
+    LruCache<String, List<Topic>> provideTopicCache() {
+        // There won't be more than 10 topic.
+        return new Cache<>(10);
     }
 }
