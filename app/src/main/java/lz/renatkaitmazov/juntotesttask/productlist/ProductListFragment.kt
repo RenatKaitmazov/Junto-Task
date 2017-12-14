@@ -18,16 +18,21 @@ import kotlinx.android.synthetic.main.toolbar.view.*
 import lz.renatkaitmazov.juntotesttask.JuntoApp
 import lz.renatkaitmazov.juntotesttask.R
 import lz.renatkaitmazov.juntotesttask.base.RetainableFragment
+import lz.renatkaitmazov.juntotesttask.common.ItemDividerDecoration
 import lz.renatkaitmazov.juntotesttask.data.model.product.Product
 import lz.renatkaitmazov.juntotesttask.data.model.topic.Topic
 import lz.renatkaitmazov.juntotesttask.di.fragment.ProductListFragmentModule
+import lz.renatkaitmazov.juntotesttask.productlist.adapter.ProductAdapter
 import javax.inject.Inject
 
 /**
  *
  * @author Renat Kaitmazov
  */
-class ProductListFragment : RetainableFragment(), ProductListView {
+class ProductListFragment :
+        RetainableFragment(),
+        ProductListView,
+        ProductAdapter.ProductAdapterItemClickListener {
 
     /*------------------------------------------------------------------------*/
     /* Static                                                                 */
@@ -50,6 +55,9 @@ class ProductListFragment : RetainableFragment(), ProductListView {
         private set
 
     lateinit var productRecyclerView: RecyclerView
+        private set
+
+    lateinit var productAdapter: ProductAdapter
         private set
 
     lateinit var progressBar: ProgressBar
@@ -124,7 +132,15 @@ class ProductListFragment : RetainableFragment(), ProductListView {
     }
 
     override fun showTodayProducts(products: List<Product>) {
-        Log.i("ProductListFragment", products.toString())
+        productAdapter.update(products)
+    }
+
+    /*------------------------------------------------------------------------*/
+    /* ProductAdapter.ProductAdapterItemClickListener implementation          */
+    /*------------------------------------------------------------------------*/
+
+    override fun onItemClicked(item: Product) {
+        Log.d("ProductListFragment", item.toString())
     }
 
     /*------------------------------------------------------------------------*/
@@ -155,16 +171,24 @@ class ProductListFragment : RetainableFragment(), ProductListView {
         val purple = ContextCompat.getColor(ctx, android.R.color.holo_purple)
         swipeRefreshLayout.setColorSchemeColors(darkRed, darkGreen, purple)
         swipeRefreshLayout.setOnRefreshListener {
-            if (!isFetchingData()) {
+            if (progressBar.visibility != View.VISIBLE) {
                 presenter?.refreshTodayProducts(topicSlug)
             }
         }
     }
 
     private fun setUpProductRecyclerView(recyclerView: RecyclerView) {
-        val linearLayoutManager = LinearLayoutManager(activity)
+        productAdapter = ProductAdapter(this)
+        val ctx = activity as Context
+        val linearLayoutManager = LinearLayoutManager(ctx)
+        val divider = ContextCompat.getDrawable(ctx, R.drawable.item_divider)!!
+        val endPadding = resources.getDimension(R.dimen.padding_small).toInt()
+        val startPadding = endPadding shl 1 // Twice as big as the start padding.
+        val itemDivider = ItemDividerDecoration(divider, startPadding, endPadding)
         // The size of the recycler view won't change. The flag improves performance.
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = linearLayoutManager
+        recyclerView.adapter = productAdapter
+        recyclerView.addItemDecoration(itemDivider)
     }
 }

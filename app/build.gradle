@@ -54,6 +54,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
 
+    // For image downloading and processing
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
+
     // Testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

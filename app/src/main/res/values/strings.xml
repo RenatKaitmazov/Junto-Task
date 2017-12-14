@@ -3,4 +3,7 @@
 
     <string name="default_slug">tech</string>
     <string name="default_category">Tech</string>
+
+    <string name="product_thumbnail_description">Displays an image of a product</string>
+    <string name="up_vote_image_description">Shows the number of up votes</string>
 </resources>

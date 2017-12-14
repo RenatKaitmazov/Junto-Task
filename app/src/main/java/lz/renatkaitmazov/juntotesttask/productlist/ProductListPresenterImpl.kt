@@ -62,7 +62,9 @@ class ProductListPresenterImpl(view: ProductListView,
     /*------------------------------------------------------------------------*/
 
     private fun getTodayProducts(topicSlug: String, shouldClearCache: Boolean) {
-        view?.showProgress()
+        // There is no need in showing additional progress view, because the SwipeRefreshLayout
+        // has its own progress bar that will shown automatically.
+        if (!shouldClearCache) view?.showProgress()
         if (shouldClearCache) productRestRepository.clearCache()
         val disposable = productRestRepository.getTodayProducts(topicSlug)
                 .subscribeOn(Schedulers.io())
