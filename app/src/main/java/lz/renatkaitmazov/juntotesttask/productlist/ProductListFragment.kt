@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +19,12 @@ import lz.renatkaitmazov.juntotesttask.JuntoApp
 import lz.renatkaitmazov.juntotesttask.R
 import lz.renatkaitmazov.juntotesttask.base.RetainableFragment
 import lz.renatkaitmazov.juntotesttask.common.ItemDividerDecoration
+import lz.renatkaitmazov.juntotesttask.common.RecyclerViewAdapterItemClickListener
 import lz.renatkaitmazov.juntotesttask.data.model.product.Product
 import lz.renatkaitmazov.juntotesttask.data.model.topic.Topic
 import lz.renatkaitmazov.juntotesttask.di.fragment.ProductListFragmentModule
 import lz.renatkaitmazov.juntotesttask.productdetail.ProductDetailActivity
-import lz.renatkaitmazov.juntotesttask.productlist.adapter.ProductAdapter
+import lz.renatkaitmazov.juntotesttask.productlist.adapter.product.ProductAdapter
 import javax.inject.Inject
 
 /**
@@ -34,13 +34,21 @@ import javax.inject.Inject
 class ProductListFragment :
         RetainableFragment(),
         ProductListView,
-        ProductAdapter.ProductAdapterItemClickListener {
+        RecyclerViewAdapterItemClickListener<Product>,
+        TopicListDialogFragment.OnTopicSelectedListener {
 
     /*------------------------------------------------------------------------*/
     /* Static                                                                 */
     /*------------------------------------------------------------------------*/
 
     companion object {
+
+        /*------------------------------------------------------------------------*/
+        /* Constants                                                              */
+        /*------------------------------------------------------------------------*/
+
+        private const val REQUEST_KEY = 100
+        private const val TOPIC_LIST_FRAGMENT_TAG = "TopicListFragment"
 
         /*------------------------------------------------------------------------*/
         /* API                                                                    */
@@ -69,6 +77,8 @@ class ProductListFragment :
 
     private lateinit var topicSlug: String
 
+    private lateinit var topicName: String
+
     /*------------------------------------------------------------------------*/
     /* Lifecycle Events                                                       */
     /*------------------------------------------------------------------------*/
@@ -76,6 +86,7 @@ class ProductListFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         topicSlug = getString(R.string.default_slug)
+        topicName = getString(R.string.default_topic)
         JuntoApp.get(activity as Context)
                 .appComponent
                 .plus(ProductListFragmentModule(this))
@@ -128,7 +139,10 @@ class ProductListFragment :
     }
 
     override fun showTrendingTopics(topics: List<Topic>) {
-        Log.i("ProductListFragment", topics.toString())
+        val topicListFragment = TopicListDialogFragment.newInstance(topics as ArrayList<Topic>)
+        topicListFragment.setTargetFragment(this, REQUEST_KEY)
+        val fragmentManager = activity!!.supportFragmentManager
+        topicListFragment.show(fragmentManager, TOPIC_LIST_FRAGMENT_TAG)
     }
 
     override fun showTodayProducts(products: List<Product>) {
@@ -136,12 +150,23 @@ class ProductListFragment :
     }
 
     /*------------------------------------------------------------------------*/
-    /* ProductAdapter.ProductAdapterItemClickListener implementation          */
+    /* RecyclerViewAdapterItemClickListener implementation                    */
     /*------------------------------------------------------------------------*/
 
-    override fun onItemClicked(item: Product) {
+    override fun onAdapterItemClicked(item: Product) {
         val activityIntent = ProductDetailActivity.newIntent(activity!!, item)
         startActivity(activityIntent)
+    }
+
+    /*------------------------------------------------------------------------*/
+    /* TopicListDialogFragment.OnTopicSelectedListener  implementation        */
+    /*------------------------------------------------------------------------*/
+
+    override fun onTopicSelected(topic: Topic) {
+        topicName = topic.name
+        topicSlug = topic.slug
+        view?.toolbarTitle?.text = topicName
+        presenter?.getTodayProducts(topicSlug)
     }
 
     /*------------------------------------------------------------------------*/
@@ -157,7 +182,7 @@ class ProductListFragment :
         // Reset the toolbar's intrinsic title, because we use a custom one.
         parentActivity.supportActionBar!!.title = null
         // Set our own clickable title.
-        toolbar.toolbarTitle.setText(R.string.default_category)
+        toolbar.toolbarTitle.text = topicName
         toolbar.toolbarTitle.setOnClickListener {
             if (!isFetchingData()) {
                 presenter?.getTrendingTopics()
@@ -182,7 +207,7 @@ class ProductListFragment :
         productAdapter = ProductAdapter(this)
         val ctx = activity as Context
         val linearLayoutManager = LinearLayoutManager(ctx)
-        val divider = ContextCompat.getDrawable(ctx, R.drawable.item_divider)!!
+        val divider = ctx.getDrawable(R.drawable.item_divider)
         val endPadding = resources.getDimension(R.dimen.padding_small).toInt()
         val startPadding = endPadding shl 1 // Twice as big as the start padding.
         val itemDivider = ItemDividerDecoration(divider, startPadding, endPadding)

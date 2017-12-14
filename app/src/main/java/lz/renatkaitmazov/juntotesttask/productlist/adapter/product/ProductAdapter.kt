@@ -1,4 +1,4 @@
-package lz.renatkaitmazov.juntotesttask.productlist.adapter
+package lz.renatkaitmazov.juntotesttask.productlist.adapter.product
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -8,23 +8,17 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import lz.renatkaitmazov.juntotesttask.R
+import lz.renatkaitmazov.juntotesttask.common.RecyclerViewAdapterItemClickListener
+import lz.renatkaitmazov.juntotesttask.common.ViewHolderClickListener
 import lz.renatkaitmazov.juntotesttask.data.model.product.Product
 
 /**
  *
  * @author Renat Kaitmazov
  */
-class ProductAdapter(private val listener: ProductAdapterItemClickListener) :
+class ProductAdapter(private val listener: RecyclerViewAdapterItemClickListener<Product>) :
         RecyclerView.Adapter<ProductViewHolder>(),
-        ProductViewHolder.ProductItemClickListener {
-
-    /*------------------------------------------------------------------------*/
-    /* Interfaces                                                             */
-    /*------------------------------------------------------------------------*/
-
-    interface ProductAdapterItemClickListener {
-        fun onItemClicked(item: Product)
-    }
+        ViewHolderClickListener {
 
     /*------------------------------------------------------------------------*/
     /* Properties                                                             */
@@ -60,12 +54,12 @@ class ProductAdapter(private val listener: ProductAdapterItemClickListener) :
     }
 
     /*------------------------------------------------------------------------*/
-    /* ProductViewHolder.ProductItemClickListener implementation              */
+    /* RecyclerViewAdapterItemClickListener implementation                    */
     /*------------------------------------------------------------------------*/
 
-    override fun onProductItemClicked(view: View, position: Int) {
+    override fun onViewHolderClicked(view: View, position: Int) {
         val item = products[position]
-        listener.onItemClicked(item)
+        listener.onAdapterItemClicked(item)
     }
 
     /*------------------------------------------------------------------------*/

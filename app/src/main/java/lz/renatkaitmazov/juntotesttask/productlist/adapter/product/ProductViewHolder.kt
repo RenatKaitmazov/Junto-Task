@@ -1,23 +1,16 @@
-package lz.renatkaitmazov.juntotesttask.productlist.adapter
+package lz.renatkaitmazov.juntotesttask.productlist.adapter.product
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.item_product.view.*
+import lz.renatkaitmazov.juntotesttask.common.ViewHolderClickListener
 
 /**
  *
  * @author Renat Kaitmazov
  */
-class ProductViewHolder(view: View, private val listener: ProductItemClickListener) :
+class ProductViewHolder(view: View, private val listener: ViewHolderClickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
-
-    /*------------------------------------------------------------------------*/
-    /* Interfaces                                                             */
-    /*------------------------------------------------------------------------*/
-
-    interface ProductItemClickListener {
-        fun onProductItemClicked(view: View, position: Int)
-    }
 
     /*------------------------------------------------------------------------*/
     /* Properties                                                             */
@@ -28,6 +21,10 @@ class ProductViewHolder(view: View, private val listener: ProductItemClickListen
     val productDescriptionTextView = view.productDescriptionTextView
     val upVoteTextView = view.upVoteTextView
 
+    /*------------------------------------------------------------------------*/
+    /* Initialization                                                         */
+    /*------------------------------------------------------------------------*/
+
     init {
         view.setOnClickListener(this)
     }
@@ -37,6 +34,6 @@ class ProductViewHolder(view: View, private val listener: ProductItemClickListen
     /*------------------------------------------------------------------------*/
 
     override fun onClick(view: View) {
-        listener.onProductItemClicked(view, adapterPosition)
+        listener.onViewHolderClicked(view, adapterPosition)
     }
 }

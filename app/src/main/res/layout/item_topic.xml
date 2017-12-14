@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_small"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/topicThumbnail"
+        android:layout_width="@dimen/thumbnail_width"
+        android:layout_height="@dimen/thumbnail_height"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/topic_thumbnail_description"/>
+
+    <TextView
+        android:id="@+id/topicNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/topicThumbnail"
+        android:layout_marginStart="@dimen/margin_small"
+        android:maxLines="1"
+        android:ellipsize="end"
+        style="@style/TextAppearance.AppCompat.Medium"
+        tools:text="Cryptocurrency"/>
+
+    <TextView
+        android:id="@+id/topicDescriptionTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/topicNameTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/topicNameTextView"
+        android:maxLines="2"
+        android:ellipsize="end"
+        tools:text="People goes crazy about cryptocurrency and they buy a lot of video cards to mine bitcoins"/>
+
+    <TextView
+        android:id="@+id/followersLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/topicDescriptionTextView"
+        app:layout_constraintStart_toStartOf="@id/topicDescriptionTextView"
+        android:text="@string/followers_label"/>
+
+    <TextView
+        android:id="@+id/followersCountTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/followersLabel"
+        app:layout_constraintStart_toEndOf="@id/followersLabel"
+        android:layout_marginStart="@dimen/margin_small"
+        tools:text="45241"/>
+
+    <TextView
+        android:id="@+id/postsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/followersLabel"
+        app:layout_constraintStart_toStartOf="@id/followersLabel"
+        android:text="@string/posts_label"/>
+
+    <TextView
+        android:id="@+id/postsCountTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/postsLabel"
+        app:layout_constraintStart_toEndOf="@id/postsLabel"
+        android:layout_marginStart="@dimen/margin_small"
+        tools:text="2313441"/>
+
+</android.support.constraint.ConstraintLayout>
