@@ -24,17 +24,23 @@ class ProductListPresenterImpl(view: ProductListView,
     /*------------------------------------------------------------------------*/
 
     private val disposables = CompositeDisposable()
+    private var isFetchingData = false
 
     /*------------------------------------------------------------------------*/
     /* ProductListPresenter implementation                                    */
     /*------------------------------------------------------------------------*/
 
     override fun getTrendingTopics() {
+        if (isFetchingData) return
+        isFetchingData = true
         view?.showProgress()
         val disposable = topicRepository.getTrendingTopics()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doFinally { view?.hideProgress() }
+                .doFinally {
+                    isFetchingData = false
+                    view?.hideProgress()
+                }
                 .subscribe(
                         success@ { view?.showTrendingTopics(it) },
                         error@ { view?.showError(it) }
@@ -64,13 +70,16 @@ class ProductListPresenterImpl(view: ProductListView,
     /*------------------------------------------------------------------------*/
 
     private fun getTodayProducts(topicSlug: String, task: (String) -> Flowable<List<Product>>) {
-        // There is no need in showing additional progress view, because the SwipeRefreshLayout
-        // has its own progress bar that will shown automatically.
+        if (isFetchingData) return
+        isFetchingData = true
         view?.showProgress()
         val disposable = task.invoke(topicSlug)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doFinally { view?.hideProgress() }
+                .doFinally {
+                    isFetchingData = false
+                    view?.hideProgress()
+                }
                 .subscribe(
                         success@ { view?.showTodayProducts(it) },
                         error@ { view?.showError(it) }

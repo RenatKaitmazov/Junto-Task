@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_product_list.view.*
 import kotlinx.android.synthetic.main.toolbar.view.*
@@ -175,11 +174,7 @@ class ProductListFragment :
         parentActivity.supportActionBar!!.title = null
         // Set our own clickable title.
         toolbar.toolbarTitle.text = topicName
-        toolbar.toolbarTitle.setOnClickListener {
-            if (!refreshLayout.isRefreshing) {
-                presenter?.getTrendingTopics()
-            }
-        }
+        toolbar.toolbarTitle.setOnClickListener { presenter?.getTrendingTopics() }
     }
 
     private fun setUpSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
