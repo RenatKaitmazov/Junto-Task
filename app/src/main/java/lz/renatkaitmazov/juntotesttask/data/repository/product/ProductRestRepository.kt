@@ -11,5 +11,5 @@ interface ProductRestRepository {
 
     fun getTodayProducts(topicSlug: String): Flowable<List<Product>>
 
-    fun clearCache(topicSlug: String)
+    fun refreshTodayProducts(topicSlug: String): Flowable<List<Product>>
 }

@@ -35,7 +35,8 @@ class ProductRestRepositoryImpl(retrofit: Retrofit,
                 .doOnNext { cache.put(topicSlug, it)}
     }
 
-    override fun clearCache(topicSlug: String) {
+    override fun refreshTodayProducts(topicSlug: String): Flowable<List<Product>> {
         cache.remove(topicSlug)
+        return getTodayProducts(topicSlug)
     }
 }

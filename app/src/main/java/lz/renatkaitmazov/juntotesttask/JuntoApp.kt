@@ -2,6 +2,7 @@ package lz.renatkaitmazov.juntotesttask
 
 import android.app.Application
 import android.content.Context
+import android.os.Looper
 import lz.renatkaitmazov.juntotesttask.di.app.AppComponent
 import lz.renatkaitmazov.juntotesttask.di.app.AppModule
 import lz.renatkaitmazov.juntotesttask.di.app.DaggerAppComponent
@@ -44,6 +45,7 @@ class JuntoApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Thread.currentThread().priority = Thread.MAX_PRIORITY // Make UI thread as fast as possible.
+        val uiThread = Looper.getMainLooper().thread
+        uiThread.priority = Thread.MAX_PRIORITY // Make UI thread as fast as possible.
     }
 }
