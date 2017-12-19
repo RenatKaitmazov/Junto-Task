@@ -68,9 +68,6 @@ class ProductListFragment :
 
     private lateinit var productAdapter: ProductAdapter
 
-    lateinit var progressBar: ProgressBar
-        private set
-
     @Inject
     @JvmField
     var presenter: ProductListPresenter? = null
@@ -102,7 +99,6 @@ class ProductListFragment :
         setUpSwipeRefreshLayout(refreshLayout)
         productRecyclerView = view.productRecyclerView
         setUpProductRecyclerView(productRecyclerView)
-        progressBar = view.progressBar
         // Fetch data as soon as all views are initialized
         presenter?.getTodayProducts(topicSlug)
         return view
@@ -125,11 +121,10 @@ class ProductListFragment :
     /*------------------------------------------------------------------------*/
 
     override fun showProgress() {
-        progressBar.visibility = View.VISIBLE
+        refreshLayout.isRefreshing = true
     }
 
     override fun hideProgress() {
-        progressBar.visibility = View.GONE
         refreshLayout.isRefreshing = false
     }
 
@@ -173,9 +168,6 @@ class ProductListFragment :
     /* Helper Methods                                                         */
     /*------------------------------------------------------------------------*/
 
-    private fun isFetchingData() = progressBar.visibility == View.VISIBLE
-            || refreshLayout.isRefreshing
-
     private fun setUpToolbar(toolbar: Toolbar) {
         val parentActivity = activity as AppCompatActivity
         parentActivity.setSupportActionBar(toolbar)
@@ -184,7 +176,7 @@ class ProductListFragment :
         // Set our own clickable title.
         toolbar.toolbarTitle.text = topicName
         toolbar.toolbarTitle.setOnClickListener {
-            if (!isFetchingData()) {
+            if (!refreshLayout.isRefreshing) {
                 presenter?.getTrendingTopics()
             }
         }
@@ -196,11 +188,7 @@ class ProductListFragment :
         val darkGreen = ContextCompat.getColor(ctx, android.R.color.holo_green_light)
         val purple = ContextCompat.getColor(ctx, android.R.color.holo_purple)
         swipeRefreshLayout.setColorSchemeColors(darkRed, darkGreen, purple)
-        swipeRefreshLayout.setOnRefreshListener {
-            if (progressBar.visibility != View.VISIBLE) {
-                presenter?.refreshTodayProducts(topicSlug)
-            }
-        }
+        swipeRefreshLayout.setOnRefreshListener { presenter?.refreshTodayProducts(topicSlug) }
     }
 
     private fun setUpProductRecyclerView(recyclerView: RecyclerView) {
